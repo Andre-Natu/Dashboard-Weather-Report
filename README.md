@@ -1,4 +1,3 @@
-    Dashboard-Weather-Report 
 # Dashboard - Weather Station de João Pessoa
 Análise metereológica de João Pessoa no ano de 2024
 
