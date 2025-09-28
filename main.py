@@ -39,8 +39,14 @@ def create_temp_heatmap():
         colorscale='Viridis', text=txt, texttemplate='%{text}',
         hoverongaps=False, showscale=True
     ))
-    fig.update_layout(margin=dict(t=40, l=40, b=40, r=40),
-                      paper_bgcolor='white', plot_bgcolor='white')
+    fig.update_layout(
+        title="Mapa de Calor da Variação de Temperatura por Mês e Dia",
+        xaxis_title="Mês",
+        yaxis_title="Dia do Mês",
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        height=500
+    )
     return fig
 
 
@@ -65,11 +71,14 @@ def create_wind_pattern():
         a = np.radians(90 - ang)
         xe, ye = maxr * np.cos(a), maxr * np.sin(a)
         fig.add_annotation(x=xe, y=ye, text=lab, showarrow=False, font=dict(size=12))
+
     fig.update_layout(
-        margin=dict(t=40, l=40, b=40, r=40),
+        title="Wind Patterns",
         xaxis=dict(showgrid=False, zeroline=False, visible=False),
         yaxis=dict(showgrid=False, zeroline=False, visible=False),
-        paper_bgcolor='white', plot_bgcolor='white'
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        margin=dict(t=40, l=40, b=40, r=40)
     )
     return fig
 
@@ -87,6 +96,9 @@ LIGHT_GRAY = "#f7f9fc"
 
 app.layout = html.Div(style={'backgroundColor': LIGHT_GRAY, 'fontFamily': 'Arial'}, children=[
 
+    html.Link(rel='icon',
+              href='https://raw.githubusercontent.com/Andre-Natu/Dashboard-Weather-Report/main/weather.png'),
+
     # Header
     html.Div(style={'backgroundColor': DARK_BLUE, 'padding': '20px 40px', 'display': 'flex',
                     'justifyContent': 'space-between', 'alignItems': 'center'}, children=[
@@ -95,14 +107,12 @@ app.layout = html.Div(style={'backgroundColor': LIGHT_GRAY, 'fontFamily': 'Arial
             html.P("Análise metereológica de João Pessoa no ano de 2024",
                    style={'color': 'white', 'margin': 0, 'fontSize': '14px'})
         ]),
-        html.Img(src="weather.png", style={'height': '40px'})
+        html.Img(src="https://raw.githubusercontent.com/Andre-Natu/Dashboard-Weather-Report/main/weather.png",
+                 style={'height': '40px'})
     ]),
 
     # Badges
     html.Div(style={'display': 'flex', 'gap': '10px', 'padding': '10px 40px'}, children=[
-        html.Div("📅 Data Atualizada: 2025/09/28",
-                 style={'backgroundColor': 'white', 'padding': '5px 10px', 'borderRadius': '4px',
-                        'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}),
         html.Div("📂 Data Source: Instituto Nacional de Metereologia do Brasil",
                  style={'backgroundColor': 'white', 'padding': '5px 10px', 'borderRadius': '4px',
                         'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'})
@@ -213,26 +223,26 @@ app.layout = html.Div(style={'backgroundColor': LIGHT_GRAY, 'fontFamily': 'Arial
     html.Div(
         style={'display': 'flex', 'gap': '10px', 'alignItems': 'center', 'padding': '0 40px'},
         children=[
-
-            html.Label("Temperature Type:", style={'color': DARK_BLUE}),
+            html.Label("Tipo de Temperatura:", style={'color': DARK_BLUE}),
             dcc.Dropdown(
                 id='temp-type',
                 options=[
-                    {'label': 'Instant Temp', 'value': 'Temp. Ins. (C)'},
-                    {'label': 'Maximum Temp', 'value': 'Temp. Max. (C)'},
-                    {'label': 'Minimum Temp', 'value': 'Temp. Min. (C)'}
+                    {'label': 'Instantânea', 'value': 'Temp. Ins. (C)'},
+                    {'label': 'Máxima', 'value': 'Temp. Max. (C)'},
+                    {'label': 'Mínima', 'value': 'Temp. Min. (C)'}
                 ],
-                value='Temp. Ins. (C)',  # valor padrão
+                value='Temp. Ins. (C)',
                 clearable=False,
-                style={'width': '150px'}
+                style={'width': '180px'}
             ),
 
-            html.Label("Time Aggregation:", style={'color': DARK_BLUE}),
+            html.Label("Agregação de Tempo:", style={'color': DARK_BLUE}),
             dcc.Dropdown(
                 id='agg-choice',
                 options=[
-                    {'label': 'Hourly', 'value': 'H'},
-                    {'label': 'Daily', 'value': 'D'}
+                    {'label': 'Hora', 'value': 'H'},
+                    {'label': 'Dia', 'value': 'D'},
+                    {'label': 'Mês', 'value': 'M'}
                 ],
                 value='D',
                 clearable=False,
@@ -370,21 +380,24 @@ def update_all(agg, temp_col):
     # 7. fig_corr
     fig_corr = px.scatter(
         df, x="Pressao Ins. (hPa)", y="Umi. Ins. (%)",
-        color=temp_col,
-        color_continuous_scale="Blues",
+        color="Temp. Ins. (C)", color_continuous_scale="RdYlBu_r",
+        labels={"Pressao Ins. (hPa)": "Pressão (hPa)", "Umi. Ins. (%)": "Umidade (%)"},
         title="Correlação: Umidade x Pressão"
     )
-    fig_corr.update_layout(
+    fig_corr.update_traces(marker=dict(size=5, opacity=0.7))
+    fig_corr.update_layout(title=f"Umidade Média (%) por {label}",
         plot_bgcolor="#fafafa",
         paper_bgcolor="#fafafa",
-        height=350
-    )
+        xaxis=dict(gridcolor="#e0f2ff"),
+        yaxis=dict(gridcolor="#e0f2ff"),
+        height=350)
 
     # 8. Heatmap e Wind Pattern
     fig_heatmap = create_temp_heatmap()
     fig_wind = create_wind_pattern()
 
     return fig_chuva, fig_temp, fig_umid, fig_corr, fig_heatmap, fig_wind
+
 
 # ---------------------------------------------------------
 # 5. Run
