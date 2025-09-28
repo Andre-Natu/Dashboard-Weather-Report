@@ -2,6 +2,10 @@
 # Dashboard - Weather Station de João Pessoa
 Análise metereológica de João Pessoa no ano de 2024
 
+![Preview dashboard 1](dashboard preview 01.jpeg)
+
+![Preview dashboard 2](dashboard preview 02.jpeg)
+
 ## Como rodar
 Baixe a base de dados e abra um editor de python. Instale as seguintes bibliotecas:
 - pip install dash plotly
