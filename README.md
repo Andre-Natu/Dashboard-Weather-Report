@@ -1,9 +1,10 @@
 # Dashboard - Weather Station de João Pessoa
 Análise metereológica de João Pessoa no ano de 2024
 
-![Preview dashboard 1](dashboard preview 01.jpeg)
+[![Preview dashboard 1](dashboard preview 01.jpeg)](https://raw.githubusercontent.com/Andre-Natu/Dashboard-Weather-Report/main/dashboard%20preview%2001.jpeg)
 
-![Preview dashboard 2](dashboard preview 02.jpeg)
+![Preview do Dashboard 2](https://raw.githubusercontent.com/Andre-Natu/Dashboard-Weather-Report/main/dashboard%20preview%2002.jpeg)
+
 
 ## Como rodar
 Baixe a base de dados e abra um editor de python. Instale as seguintes bibliotecas:
